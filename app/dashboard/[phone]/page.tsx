@@ -8,7 +8,8 @@ import { TransactionList } from '@/components/TransactionList'
 import { QRCode } from '@/components/ui/QRCode'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
-import { Loader2, QrCode, User, Wallet } from 'lucide-react'
+import { QRScanner } from '@/components/QRScanner'
+import { Loader2, ScanLine, User, Wallet } from 'lucide-react'
 
 interface DashboardPageProps {
   params: Promise<{ phone: string }>
@@ -39,7 +40,7 @@ export default function DashboardPage({ params }: DashboardPageProps) {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
-  const [showQRModal, setShowQRModal] = useState(false)
+  const [showScanner, setShowScanner] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -140,9 +141,9 @@ export default function DashboardPage({ params }: DashboardPageProps) {
               </h1>
               <p className="text-gray-600">{userData.phone}</p>
             </div>
-            <Button onClick={() => setShowQRModal(true)} variant="secondary">
-              <QrCode size={20} />
-              My QR
+            <Button onClick={() => setShowScanner(true)} className="flex items-center gap-2">
+              <ScanLine size={20} />
+              Scan Bin
             </Button>
           </div>
         </div>
@@ -201,28 +202,12 @@ export default function DashboardPage({ params }: DashboardPageProps) {
         </Card>
       </div>
 
-      {/* QR Code Modal */}
-      <Modal
-        isOpen={showQRModal}
-        onClose={() => setShowQRModal(false)}
-        title="Your QR Code"
-        size="md"
-      >
-        <div className="text-center">
-          <p className="text-gray-600 mb-6">
-            Show this QR code at any RecyclePay bin to start earning
-          </p>
-          <QRCode value={userData.phone} size={200} />
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-700">
-              <strong>Phone:</strong> {userData.phone}
-            </p>
-            <p className="text-sm text-gray-700">
-              <strong>Balance:</strong> ₦{userData.balance}
-            </p>
-          </div>
-        </div>
-      </Modal>
+      {/* QR Scanner Modal */}
+      <QRScanner
+        isOpen={showScanner}
+        onClose={() => setShowScanner(false)}
+        userPhone={userData.phone}
+      />
     </div>
   )
 }

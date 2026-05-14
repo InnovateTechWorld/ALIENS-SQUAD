@@ -145,7 +145,7 @@ export default function Home() {
                     Continue
                   </Button>
 
-                  <p className="text-xs text-center text-gray-600 mt-4">
+                  <p className="text-xs text-center text-black font-medium mt-4">
                     By continuing, you agree to our terms of service
                   </p>
                 </form>

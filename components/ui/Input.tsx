@@ -26,7 +26,7 @@ export function Input({
   return (
     <div className={`w-full ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-bold text-black mb-1">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -38,7 +38,7 @@ export function Input({
         placeholder={placeholder}
         disabled={disabled}
         required={required}
-        className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all ${
+        className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all text-black placeholder:text-gray-400 ${
           error
             ? 'border-red-500 focus:ring-red-500'
             : 'border-gray-300'
