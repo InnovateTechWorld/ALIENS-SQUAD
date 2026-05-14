@@ -34,9 +34,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Bin not found' }, { status: 404 })
     }
 
-    if (bin.status !== 'active') {
+    const binStatus = (bin as unknown as { status?: string }).status
+
+    if (binStatus !== 'active') {
       return NextResponse.json(
-        { error: `Bin is currently ${bin.status}` },
+        { error: `Bin is currently ${binStatus}` },
         { status: 400 }
       )
     }
@@ -50,7 +52,9 @@ export async function POST(req: Request) {
 
     if (existingSession) {
       // Check if session is expired
-      const expiresAt = new Date(existingSession.expires_at)
+      const expiresAt = new Date(
+        (existingSession as { expires_at?: string }).expires_at as string
+      )
       if (expiresAt > new Date()) {
         return NextResponse.json(
           { error: 'Bin is currently in use by another user' },
@@ -58,7 +62,10 @@ export async function POST(req: Request) {
         )
       }
       // Delete expired session
-      await supabase.from('active_sessions').delete().eq('id', existingSession.id)
+      await supabase
+        .from('active_sessions')
+        .delete()
+        .eq('id', (existingSession as any).id)
     }
 
     // Create new session (expires in 5 minutes)
@@ -71,7 +78,7 @@ export async function POST(req: Request) {
         bin_id,
         user_phone,
         expires_at: expiresAt.toISOString(),
-      })
+      } as any)
       .select()
       .single()
 
