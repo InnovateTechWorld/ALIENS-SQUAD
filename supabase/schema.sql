@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS active_sessions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     bin_id VARCHAR(20) NOT NULL REFERENCES bins(bin_id) ON DELETE CASCADE,
     user_phone VARCHAR(20) NOT NULL REFERENCES users(phone) ON DELETE CASCADE,
+    status VARCHAR(20) DEFAULT 'waiting' CHECK (status IN ('waiting', 'verifying', 'success', 'failed')),
     started_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
     UNIQUE(bin_id)

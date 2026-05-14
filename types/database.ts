@@ -43,6 +43,7 @@ export interface Database {
           id: string
           bin_id: string
           user_phone: string
+          status: 'waiting' | 'verifying' | 'success' | 'failed'
           started_at: string
           expires_at: string
         }
@@ -50,6 +51,7 @@ export interface Database {
           id?: string
           bin_id: string
           user_phone: string
+          status?: 'waiting' | 'verifying' | 'success' | 'failed'
           started_at?: string
           expires_at?: string
         }
@@ -57,6 +59,7 @@ export interface Database {
           id?: string
           bin_id?: string
           user_phone?: string
+          status?: 'waiting' | 'verifying' | 'success' | 'failed'
           started_at?: string
           expires_at?: string
         }
