@@ -1,301 +1,330 @@
-'use client'
-
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Card, CardContent } from '@/components/ui/Card'
-import { Recycle, Leaf, Coins, Sparkles, QrCode, Smartphone } from 'lucide-react'
+import Link from 'next/link'
+import {
+  Recycle,
+  QrCode,
+  Wallet,
+  ArrowRight,
+  CheckCircle,
+  Leaf,
+  Coins,
+  ScanLine,
+  Zap,
+} from 'lucide-react'
+import AnimateOnScroll from '@/components/AnimateOnScroll'
+import PayoutToast from '@/components/PayoutToast'
 
 export default function Home() {
-  const router = useRouter()
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [name, setName] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!phoneNumber) {
-      setError('Phone number is required')
-      return
-    }
-
-    setLoading(true)
-    setError('')
-
-    try {
-      // Register/login user
-      const response = await fetch('/api/users/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          phone: phoneNumber,
-          name: name || undefined
-        }),
-      })
-
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to sign in')
-      }
-
-      // Redirect to dashboard
-      router.push(`/dashboard/${phoneNumber}`)
-    } catch (err: any) {
-      setError(err.message || 'An error occurred')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 px-4">
-        {/* Decorative elements */}
-        <div className="absolute top-20 left-10 opacity-10">
-          <Leaf size={100} className="text-green-600 animate-pulse" />
-        </div>
-        <div className="absolute bottom-20 right-10 opacity-10">
-          <Recycle size={120} className="text-emerald-600 animate-pulse" />
-        </div>
+    <div className="min-h-screen bg-white overflow-x-hidden">
 
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            {/* Logo/Icon */}
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                <div className="p-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl shadow-2xl">
-                  <Recycle className="text-white" size={64} />
-                </div>
-                <div className="absolute -top-2 -right-2">
-                  <Sparkles className="text-yellow-500" size={32} />
-                </div>
-              </div>
+      {/* ─── NAVBAR ─────────────────────────────────────────────── */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="p-2 bg-green-600 rounded-lg">
+              <Recycle className="text-white" size={20} />
             </div>
+            <span className="text-xl font-bold text-gray-900">RecyclePay</span>
+          </Link>
 
-            {/* Headline */}
-            <h1 className="text-5xl md:text-7xl font-bold text-black mb-6 leading-tight">
-              Get Paid to
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">
-                Recycle
-              </span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-black mb-8 max-w-3xl mx-auto font-medium">
-              Turn plastic bottles into instant cash. Simply scan a bin's QR code, recycle, and earn ₦10 per bottle.
-            </p>
-
-            {/* Value Props */}
-            <div className="flex flex-wrap justify-center gap-6 mb-12">
-              <div className="flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-md border border-gray-200">
-                <Recycle className="text-green-600" size={24} />
-                <span className="font-semibold text-black">AI-Verified</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-md border border-gray-200">
-                <Coins className="text-yellow-600" size={24} />
-                <span className="font-semibold text-black">Instant Payment</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-md border border-gray-200">
-                <Leaf className="text-emerald-600" size={24} />
-                <span className="font-semibold text-black">Save the Planet</span>
-              </div>
-            </div>
+          <div className="hidden md:flex items-center gap-8">
+            <a href="#how-it-works" className="text-gray-500 hover:text-gray-900 font-medium transition-colors text-sm">
+              How It Works
+            </a>
+            <a href="#impact" className="text-gray-500 hover:text-gray-900 font-medium transition-colors text-sm">
+              Impact
+            </a>
           </div>
 
-          {/* Sign Up Form */}
-          <div className="max-w-md mx-auto">
-            <Card className="shadow-2xl border-2 border-gray-200">
-              <CardContent className="p-8">
-                <h2 className="text-2xl font-bold text-black mb-2 text-center">
-                  Get Started
-                </h2>
-                <p className="text-black mb-6 text-center font-medium">
-                  Sign up or sign in to start earning
-                </p>
-
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <Input
-                    label="Phone Number"
-                    type="tel"
-                    placeholder="+234 800 000 0000"
-                    value={phoneNumber}
-                    onChange={setPhoneNumber}
-                    error={error}
-                    required
-                  />
-
-                  <Input
-                    label="Name (Optional)"
-                    type="text"
-                    placeholder="Your name"
-                    value={name}
-                    onChange={setName}
-                  />
-
-                  <Button
-                    type="submit"
-                    loading={loading}
-                    className="w-full"
-                    size="lg"
-                  >
-                    Continue
-                  </Button>
-
-                  <p className="text-xs text-center text-black font-medium mt-4">
-                    By continuing, you agree to our terms of service
-                  </p>
-                </form>
-              </CardContent>
-            </Card>
+          <div className="flex items-center gap-3">
+            <Link href="/auth" className="text-gray-600 font-medium hover:text-gray-900 transition-colors text-sm">
+              Sign In
+            </Link>
+            <Link
+              href="/auth"
+              className="bg-green-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-green-700 transition-colors text-sm"
+            >
+              Get Started
+            </Link>
           </div>
         </div>
-      </section>
+      </nav>
 
-      {/* How It Works Section */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center text-black mb-16">
-            How It Works
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Step 1 */}
-            <div className="text-center">
-              <div className="relative inline-block mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <span className="text-3xl font-bold text-white">1</span>
-                </div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
-                  <Smartphone size={16} className="text-black" />
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-black">Sign Up</h3>
-              <p className="text-black font-medium">
-                Enter your phone number and name to create your free account
+      {/* ─── HERO (load animations — fire on page load) ─────────── */}
+      <section className="pt-32 pb-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+            {/* Left: copy */}
+            <div>
+              
+
+              <h1 className="anim-fade-up delay-100 text-5xl md:text-6xl font-extrabold text-gray-900 leading-[1.1] mb-6">
+                Turn your recyclables into{' '}
+                <span className="text-green-600">instant cash.</span>
+              </h1>
+
+              <p className="anim-fade-up delay-200 text-xl text-gray-500 mb-10 leading-relaxed max-w-lg">
+                Scan, drop, and withdraw your rewards directly to your bank.
+                Earn ₦100 for every bottle you recycle.
               </p>
-            </div>
 
-            {/* Step 2 */}
-            <div className="text-center">
-              <div className="relative inline-block mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <span className="text-3xl font-bold text-white">2</span>
-                </div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
-                  <QrCode size={16} className="text-black" />
-                </div>
+              <div className="anim-fade-up delay-300 flex flex-wrap gap-4 mb-10">
+                <Link
+                  href="/auth"
+                  className="inline-flex items-center gap-2 bg-green-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-green-700 hover:scale-[1.02] active:scale-100 transition-all shadow-lg shadow-green-100"
+                >
+                  Start Earning
+                  <ArrowRight size={20} />
+                </Link>
+                <a
+                  href="#how-it-works"
+                  className="inline-flex items-center gap-2 bg-gray-100 text-gray-800 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-200 hover:scale-[1.02] active:scale-100 transition-all"
+                >
+                  Find a Bin
+                </a>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-black">Scan Bin QR</h3>
-              <p className="text-black font-medium">
-                Find a RecyclePay bin and scan the static QR code on it with your phone
-              </p>
-            </div>
 
-            {/* Step 3 */}
-            <div className="text-center">
-              <div className="relative inline-block mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <span className="text-3xl font-bold text-white">3</span>
-                </div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
-                  <Recycle size={16} className="text-black" />
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-black">Insert Bottle</h3>
-              <p className="text-black font-medium">
-                Put your bottle in the bin and our AI camera will verify it's recyclable
-              </p>
-            </div>
-
-            {/* Step 4 */}
-            <div className="text-center">
-              <div className="relative inline-block mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <span className="text-3xl font-bold text-white">4</span>
-                </div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
-                  <Coins size={16} className="text-black" />
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-black">Get Paid</h3>
-              <p className="text-black font-medium">
-                Receive ₦10 instantly in your wallet - check your dashboard
-              </p>
-            </div>
-          </div>
-
-          {/* QR Code Callout */}
-          <div className="mt-16 max-w-3xl mx-auto">
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200 rounded-2xl p-8">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center">
-                    <QrCode className="text-white" size={32} />
+              <div className="anim-fade-in delay-500 flex flex-wrap gap-6">
+                {['AI-Verified Detection', 'Instant Bank Withdrawal', '100% Free to Use'].map((label) => (
+                  <div key={label} className="flex items-center gap-2 text-gray-600">
+                    <CheckCircle className="text-green-500 shrink-0" size={17} />
+                    <span className="text-sm font-medium">{label}</span>
                   </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-black mb-3">
-                    Each Bin Has a Unique QR Code
-                  </h3>
-                  <p className="text-black text-lg font-medium mb-4">
-                    Every RecyclePay smart bin has a static QR code printed on it. When you scan it with your phone camera, 
-                    it opens a page where you authenticate with your phone number to start a recycling session at that specific bin.
-                  </p>
-                  <div className="flex items-center gap-2 text-purple-700 font-bold">
-                    <span className="text-2xl">👉</span>
-                    <span>Look for bins with the green RecyclePay logo!</span>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: Photo collage — desktop */}
+            <div className="relative h-[520px] hidden lg:block">
+
+              {/* Payout toast — anchored inside the hero collage */}
+              <PayoutToast />
+
+              {/* Eco badge */}
+              <div className="anim-fade-in delay-400 anim-float-slow absolute top-2 right-0 z-20 flex items-center gap-2 bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
+                <Leaf size={13} />
+                Eco-Verified
+              </div>
+
+              {/* Large main photo */}
+              <div className="anim-fade-right delay-200 absolute right-0 top-10 w-[88%] h-[355px] rounded-3xl overflow-hidden shadow-2xl">
+                <img
+                  src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&h=500"
+                  alt="Happy community recycling volunteers"
+                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              </div>
+
+              {/* Secondary photo — local asset */}
+              <div className="anim-scale-in delay-400 absolute left-0 bottom-2 w-[43%] h-[210px] rounded-3xl overflow-hidden shadow-xl border-4 border-white z-10">
+                <img
+                  src="/image-smiling.jpg"
+                  alt="Person using RecyclePay app"
+                  className="w-full h-full object-cover object-top transition-transform duration-700 hover:scale-105"
+                />
+              </div>
+
+              {/* Floating earnings card */}
+              <div className="anim-scale-in delay-600 anim-float absolute right-4 bottom-6 z-20 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 w-48">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center">
+                    <Coins className="text-green-600" size={16} />
                   </div>
+                  <span className="text-xs font-bold text-gray-700">Today&apos;s Earnings</span>
+                </div>
+                <p className="text-2xl font-extrabold text-gray-900">₦5,340</p>
+                <p className="text-xs text-gray-400 mt-0.5">across 234 users</p>
+                <div className="mt-3 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full w-3/4 bg-green-500 rounded-full" />
                 </div>
               </div>
             </div>
+
+            {/* Mobile: single image */}
+            <div className="anim-fade-in lg:hidden rounded-3xl overflow-hidden shadow-xl h-64">
+              <img
+                src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&h=400"
+                alt="Happy community recycling volunteers"
+                className="w-full h-full object-cover"
+              />
+            </div>
+
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-green-600 to-emerald-700 text-white">
+      {/* ─── HOW IT WORKS (scroll-triggered) ────────────────────── */}
+      <section id="how-it-works" className="py-24 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16">Our Impact</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="text-6xl font-bold mb-2">10,000+</div>
-              <div className="text-xl text-white font-semibold">Bottles Recycled</div>
-            </div>
-            <div className="text-center">
-              <div className="text-6xl font-bold mb-2">₦100K+</div>
-              <div className="text-xl text-white font-semibold">Paid to Users</div>
-            </div>
-            <div className="text-center">
-              <div className="text-6xl font-bold mb-2">5 Tons</div>
-              <div className="text-xl text-white font-semibold">Plastic Saved</div>
-            </div>
+
+          <div className="text-center mb-16">
+            <AnimateOnScroll animation="anim-fade-up" as="span"
+              className="inline-block text-green-600 font-bold text-sm tracking-widest uppercase"
+            >
+              Simple Process
+            </AnimateOnScroll>
+            <AnimateOnScroll animation="anim-fade-up" delay="delay-100" as="h2"
+              className="text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-4"
+            >
+              How It Works
+            </AnimateOnScroll>
+            <AnimateOnScroll animation="anim-fade-up" delay="delay-200" as="p"
+              className="text-gray-500 text-lg max-w-md mx-auto"
+            >
+              Three steps to turn your plastic into money.
+            </AnimateOnScroll>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <AnimateOnScroll animation="anim-fade-up" delay="delay-200"
+              className="group bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-1.5 transition-all duration-300"
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-9 h-9 bg-green-600 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0">1</div>
+                <div className="h-px flex-1 bg-gray-100 group-hover:bg-green-100 transition-colors" />
+              </div>
+              <div className="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <QrCode className="text-white" size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Scan &amp; Unlock</h3>
+              <p className="text-gray-500 leading-relaxed text-sm">
+                Open the app and scan the QR code on any RecyclePay bin to unlock it instantly.
+              </p>
+            </AnimateOnScroll>
+
+            <AnimateOnScroll animation="anim-fade-up" delay="delay-300"
+              className="group bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-1.5 transition-all duration-300"
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-9 h-9 bg-green-600 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0">2</div>
+                <div className="h-px flex-1 bg-gray-100 group-hover:bg-green-100 transition-colors" />
+              </div>
+              <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <ScanLine className="text-white" size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Deposit &amp; Detect</h3>
+              <p className="text-gray-500 leading-relaxed text-sm">
+                Drop your items. Our smart hardware verifies the recyclables instantly using AI vision.
+              </p>
+            </AnimateOnScroll>
+
+            <AnimateOnScroll animation="anim-fade-up" delay="delay-400"
+              className="group bg-white rounded-3xl p-8 shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-1.5 transition-all duration-300"
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-9 h-9 bg-green-600 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0">3</div>
+                <div className="h-px flex-1 bg-gray-100 group-hover:bg-green-100 transition-colors" />
+              </div>
+              <div className="w-14 h-14 bg-yellow-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Wallet className="text-white" size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Earn &amp; Withdraw</h3>
+              <p className="text-gray-500 leading-relaxed text-sm">
+                Watch your balance grow and cash out instantly to your Nigerian bank account.
+              </p>
+            </AnimateOnScroll>
+
           </div>
         </div>
       </section>
 
-      {/* Footer CTA */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-black mb-4">
-            Ready to Start Earning?
-          </h2>
-          <p className="text-xl text-black font-medium mb-8">
-            Join thousands of Nigerians getting paid to recycle
-          </p>
-          <Button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            size="lg"
-            className="px-12"
+      {/* ─── IMPACT (scroll-triggered) ───────────────────────────── */}
+      <section id="impact" className="py-24 px-6 bg-gray-950 overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+
+          <div className="text-center mb-16">
+            <AnimateOnScroll animation="anim-fade-up" as="span"
+              className="inline-block text-green-400 font-bold text-sm tracking-widest uppercase"
+            >
+              Our Impact
+            </AnimateOnScroll>
+            <AnimateOnScroll animation="anim-fade-up" delay="delay-100" as="h2"
+              className="text-4xl md:text-5xl font-bold text-white mt-3"
+            >
+              Numbers that matter.
+            </AnimateOnScroll>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <AnimateOnScroll animation="anim-scale-in" delay="delay-200"
+              className="text-center p-10 bg-gray-900 rounded-3xl border border-gray-800 hover:border-green-800 hover:-translate-y-1 transition-all duration-300"
+            >
+              <Recycle className="text-green-400 mx-auto mb-5 anim-float" size={36} />
+              <div className="text-5xl font-bold text-white mb-2">10,000+</div>
+              <div className="text-gray-400 font-medium">Bottles Recycled</div>
+            </AnimateOnScroll>
+
+            <AnimateOnScroll animation="anim-scale-in" delay="delay-300"
+              className="text-center p-10 bg-green-600 rounded-3xl hover:-translate-y-1 transition-all duration-300"
+            >
+              <Coins className="text-white mx-auto mb-5 anim-float" size={36} />
+              <div className="text-5xl font-bold text-white mb-2">₦100K+</div>
+              <div className="text-green-100 font-medium">Paid to Users</div>
+            </AnimateOnScroll>
+
+            <AnimateOnScroll animation="anim-scale-in" delay="delay-400"
+              className="text-center p-10 bg-gray-900 rounded-3xl border border-gray-800 hover:border-green-800 hover:-translate-y-1 transition-all duration-300"
+            >
+              <Leaf className="text-green-400 mx-auto mb-5 anim-float" size={36} />
+              <div className="text-5xl font-bold text-white mb-2">5 Tons</div>
+              <div className="text-gray-400 font-medium">Plastic Diverted</div>
+            </AnimateOnScroll>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CALL TO ACTION (scroll-triggered) ──────────────────── */}
+      <section className="py-24 px-6 bg-white">
+        <div className="max-w-3xl mx-auto text-center">
+          <AnimateOnScroll animation="anim-fade-up" as="h2"
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
           >
-            Sign Up Now
-          </Button>
+            Ready to start{' '}
+            <span className="text-green-600">earning?</span>
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="anim-fade-up" delay="delay-100" as="p"
+            className="text-xl text-gray-500 mb-10 leading-relaxed"
+          >
+            Join thousands of Nigerians turning plastic into real money.
+            It&apos;s free, instant, and good for the planet.
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="anim-fade-up" delay="delay-200">
+            <Link
+              href="/auth"
+              className="inline-flex items-center gap-3 bg-green-600 text-white px-10 py-5 rounded-xl font-bold text-xl hover:bg-green-700 hover:scale-[1.03] active:scale-100 transition-all shadow-2xl shadow-green-100"
+            >
+              Get Started — It&apos;s Free
+              <ArrowRight size={22} />
+            </Link>
+          </AnimateOnScroll>
         </div>
       </section>
+
+      {/* ─── FOOTER ─────────────────────────────────────────────── */}
+      <footer className="bg-gray-950 text-gray-500 py-12 px-6">
+        <AnimateOnScroll animation="anim-fade-in"
+          className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6"
+        >
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="p-2 bg-green-600 rounded-lg">
+              <Recycle className="text-white" size={16} />
+            </div>
+            <span className="text-white font-bold">RecyclePay</span>
+          </Link>
+          <p className="text-sm">© 2026 RecyclePay. Built for a greener Nigeria.</p>
+          <div className="flex gap-6 text-sm">
+            <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
+            <a href="#impact" className="hover:text-white transition-colors">Impact</a>
+            <Link href="/auth" className="hover:text-white transition-colors">Sign In</Link>
+          </div>
+        </AnimateOnScroll>
+      </footer>
+
     </div>
   )
 }

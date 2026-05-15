@@ -23,11 +23,10 @@ export class SquadAPI {
   private secretKey: string
 
   constructor() {
-    if (!SQUAD_SECRET_KEY) {
-      throw new Error('SQUAD_SECRET_KEY is not configured')
-    }
+    // Don't throw at construction time — the register route guards usage
+    // behind a SQUAD_SECRET_KEY check and treats Squad as optional.
     this.apiUrl = SQUAD_API_URL
-    this.secretKey = SQUAD_SECRET_KEY
+    this.secretKey = SQUAD_SECRET_KEY ?? ''
   }
 
   private getHeaders() {

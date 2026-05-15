@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase'
+import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import { squadAPI } from '@/lib/squad'
 import { NextResponse } from 'next/server'
 import type { Database } from '@/types/database'
@@ -6,6 +6,13 @@ import type { Database } from '@/types/database'
 type UserInsert = Database['public']['Tables']['users']['Insert']
 
 export async function POST(req: Request) {
+  if (!isSupabaseConfigured()) {
+    return NextResponse.json(
+      { error: 'Database not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to your .env.local file, then restart the dev server.' },
+      { status: 503 },
+    )
+  }
+
   try {
     const { phone, name } = await req.json()
 
